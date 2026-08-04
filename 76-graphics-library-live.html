@@ -19,14 +19,18 @@
   .status{margin-left:auto;font-size:12px;font-weight:800;background:rgba(255,255,255,.16);padding:6px 11px;border-radius:999px;white-space:nowrap}
   .status.ok{background:#1f9d55}
   .status.err{background:#c0392b}
-  .toolbar{max-width:1200px;margin:0 auto;padding:14px 18px 4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .search{flex:1;min-width:220px;position:relative}
+  .toolbar{max-width:1200px;margin:0 auto;padding:14px 18px 4px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .search{flex:1;min-width:200px;position:relative}
   .search input{width:100%;padding:11px 14px 11px 38px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff}
   .search svg{position:absolute;left:12px;top:12px;opacity:.5}
-  .btn{border:0;background:var(--blue);color:#fff;font-weight:800;font-size:13.5px;padding:10px 15px;border-radius:10px;cursor:pointer}
+  .btn{border:0;background:var(--blue);color:#fff;font-weight:800;font-size:13px;padding:10px 13px;border-radius:10px;cursor:pointer;white-space:nowrap}
   .btn.y{background:var(--yellow);color:#3a2f00}
   .btn.ghost{background:#eef3f9;color:var(--blue)}
   .btn:disabled{opacity:.5;cursor:default}
+  .tagbar{max-width:1200px;margin:0 auto;padding:8px 18px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .tagbar .lbl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-right:2px}
+  .tagchip{border:1px solid var(--line);background:#fff;color:var(--ink);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+  .tagchip.on{background:var(--yellow);color:#3a2f00;border-color:var(--yellow)}
   .crumbs{max-width:1200px;margin:0 auto;padding:8px 18px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px}
   .crumbs a{color:var(--blue);cursor:pointer;font-weight:700;text-decoration:none}
   .crumbs span.sep{color:var(--muted)}
@@ -44,11 +48,16 @@
   .exttile .e{font-size:22px;font-weight:900;letter-spacing:.5px}
   .cbody{padding:9px 11px 11px;display:flex;flex-direction:column;gap:6px;flex:1}
   .cname{font-size:13px;font-weight:700;line-height:1.25;word-break:break-word}
+  .ctags{display:flex;gap:4px;flex-wrap:wrap}
+  .ctag{font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:#fff3cf;color:#8a6d00}
   .cmeta{font-size:11px;color:var(--muted);margin-top:auto;display:flex;align-items:center;gap:6px;justify-content:space-between}
+  .cmeta .left{display:flex;gap:6px;align-items:center}
+  .tagbtn{border:0;background:#eef3f9;color:var(--muted);font-weight:800;font-size:11px;padding:4px 7px;border-radius:6px;cursor:pointer}
   .extbadge{font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;background:#eef3f9;color:var(--blue)}
   .extbadge.ai{background:#fff1e0;color:#b3541e}.extbadge.psd{background:#e6f0ff;color:#1b4fa0}
   .extbadge.pdf{background:#ffe6e6;color:#b02525}.extbadge.svg{background:#e7f7ec;color:#1f8a4c}
   .dl{border:0;background:var(--blue);color:#fff;font-weight:800;font-size:11.5px;padding:5px 9px;border-radius:7px;cursor:pointer}
+  .dl.z{background:#eef3f9;color:var(--blue)}
   .empty{text-align:center;color:var(--muted);padding:46px 10px;font-size:14px}
   .up{background:#fff;border:1px dashed #cbd7e4;border-radius:12px;padding:12px 14px;margin:14px 0;font-size:12.5px;color:var(--muted);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .up b{color:var(--ink)}
@@ -86,15 +95,19 @@
     <input id="q" type="search" placeholder="Αναζήτηση σε όλη τη βιβλιοθήκη…">
   </div>
   <button class="btn ghost" id="reload">↻ Ανανέωση</button>
-  <button class="btn y" id="uploadBtn">⬆︎ Ανέβασμα εδώ</button>
+  <button class="btn ghost" id="zipBtn">⬇︎ Φάκελος (.zip)</button>
+  <button class="btn y" id="uploadBtn">⬆︎ Αρχεία</button>
+  <button class="btn y" id="folderBtn">⬆︎ Φάκελος</button>
   <input type="file" id="fileInput" multiple style="display:none">
+  <input type="file" id="folderInput" webkitdirectory multiple style="display:none">
 </div>
 
+<div class="tagbar" id="tagbar" style="display:none"></div>
 <div class="crumbs" id="crumbs"></div>
 
 <main>
   <div class="up" id="uphint">
-    <span>⬆︎ <b>Ανέβασμα χωρίς κωδικό</b> (προσωρινά): πήγαινε στον φάκελο που θες και πάτα «Ανέβασμα εδώ». Αν δεν ξέρεις πού, μπες στο <b>«0. ΝΕΑ – ΠΡΟΣ ΤΑΞΙΝΟΜΗΣΗ»</b>.</span>
+    <span>⬆︎ <b>Χωρίς κωδικό</b> (προσωρινά): «Αρχεία» ή ολόκληρος «Φάκελος» ανεβαίνουν εδώ που βρίσκεσαι (ή σύρε τα μέσα). Αν δεν ξέρεις πού, μπες στο <b>«0. ΝΕΑ – ΠΡΟΣ ΤΑΞΙΝΟΜΗΣΗ»</b>. 🏷 = ετικέτες.</span>
   </div>
   <div class="count" id="count"></div>
   <div class="grid" id="grid"></div>
@@ -110,16 +123,20 @@ var path=[];          // [{id,name}]
 var cache={};         // id -> listing {id,name,folders,files}
 var TREE=null;        // full tree for search (lazy)
 var thumbCache={};
+var LABELS={};        // id -> [tags]  (app-level, from _labels.json)
+var activeTag="";
 
 function el(id){return document.getElementById(id);}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
-function toast(m,e){var t=el("toast");t.textContent=m;t.className="toast show"+(e?" err":"");clearTimeout(toast._t);toast._t=setTimeout(function(){t.className="toast";},2800);}
+function toast(m,e){var t=el("toast");t.textContent=m;t.className="toast show"+(e?" err":"");clearTimeout(toast._t);toast._t=setTimeout(function(){t.className="toast";},3200);}
 function setStatus(txt,cls){var s=el("status");s.textContent=txt;s.className="status"+(cls?(" "+cls):"");}
 function extClass(ex){ex=(ex||"").toLowerCase();return ["ai","psd","pdf","svg"].indexOf(ex)>=0?ex:"";}
 function isTransName(n){return /διάφαν|transparent|alpha/i.test(n)||/\.png$/i.test(n)||/\.svg$/i.test(n);}
 function human(n){n=+n||0;if(n<1024)return n+" B";if(n<1048576)return (n/1024).toFixed(0)+" KB";return (n/1048576).toFixed(1)+" MB";}
 function cur(){return path[path.length-1];}
 function curListing(){return cache[cur().id];}
+function tagsOf(id){return LABELS[id]||[];}
+function hasTag(id){return !activeTag||tagsOf(id).indexOf(activeTag)>=0;}
 
 /* ---------- API ---------- */
 function apiGet(qs){ return fetch(API+"?"+qs).then(function(r){return r.json();}); }
@@ -132,9 +149,31 @@ function boot(){
   setStatus("σύνδεση…");
   listFolder(null).then(function(root){
     if(!root||root.error||!root.id) throw new Error(root&&root.error||"no root");
-    path=[{id:root.id,name:root.name}]; setStatus("συνδεδεμένο ✓","ok"); render();
+    path=[{id:root.id,name:root.name}]; setStatus("συνδεδεμένο ✓","ok");
+    apiGet("action=labels").then(function(r){ LABELS=(r&&r.labels)||{}; buildTagBar(); render(); }).catch(function(){ render(); });
   }).catch(function(err){ setStatus("εκτός σύνδεσης","err");
     showEmpty("Δεν φόρτωσε ("+esc(String(err.message||err))+"). Αν είσαι σε browser με πολλά Google logins, δοκίμασε incognito ή κινητό."); });
+}
+
+/* ---------- tags ---------- */
+function allTags(){ var s={}; for(var k in LABELS){ (LABELS[k]||[]).forEach(function(t){ s[t]=1; }); } return Object.keys(s).sort(function(a,b){return a.localeCompare(b);}); }
+function buildTagBar(){
+  var tags=allTags(); var bar=el("tagbar");
+  if(!tags.length){ bar.style.display="none"; bar.innerHTML=""; return; }
+  bar.style.display="flex";
+  bar.innerHTML='<span class="lbl">🏷 Ετικέτες</span>'+
+    '<span class="tagchip'+(activeTag===""?" on":"")+'" data-tag="">Όλες</span>'+
+    tags.map(function(t){ return '<span class="tagchip'+(activeTag===t?" on":"")+'" data-tag="'+esc(t)+'">'+esc(t)+'</span>'; }).join("");
+}
+function tagChipsHTML(id){ var ts=tagsOf(id); if(!ts.length) return ""; return '<div class="ctags">'+ts.map(function(t){return '<span class="ctag">'+esc(t)+'</span>';}).join("")+'</div>'; }
+function editTags(id,name){
+  var cur=tagsOf(id).join(", ");
+  var v=window.prompt("Ετικέτες για «"+name+"» (χωρισμένες με κόμμα):",cur);
+  if(v===null) return;
+  var arr=v.split(",").map(function(s){return s.trim();}).filter(Boolean);
+  if(arr.length) LABELS[id]=arr; else delete LABELS[id];
+  buildTagBar(); render();
+  apiPost({action:"setlabels",labels:LABELS}).then(function(r){ if(!r||!r.ok) toast("Οι ετικέτες δεν αποθηκεύτηκαν.",true); }).catch(function(){ toast("Οι ετικέτες δεν αποθηκεύτηκαν.",true); });
 }
 
 /* ---------- render ---------- */
@@ -151,24 +190,26 @@ function showLoading(){ el("empty").style.display="none"; el("grid").style.displ
 function folderCard(f){
   return '<div class="card" data-folder="'+esc(f.id)+'" data-fname="'+esc(f.name)+'">'+
     '<div class="thumb"><span class="folderico">📁</span></div>'+
-    '<div class="cbody"><div class="cname">'+esc(f.name)+'</div>'+
-      '<div class="cmeta"><span>άνοιγμα</span><span class="extbadge">ΦΑΚΕΛΟΣ</span></div></div></div>';
+    '<div class="cbody"><div class="cname">'+esc(f.name)+'</div>'+tagChipsHTML(f.id)+
+      '<div class="cmeta"><span class="left"><button class="tagbtn" data-tag-edit="'+esc(f.id)+'" data-tag-name="'+esc(f.name)+'">🏷</button><button class="dl z" data-zip="'+esc(f.id)+'" data-zipn="'+esc(f.name)+'">zip</button></span><span class="extbadge">ΦΑΚΕΛΟΣ</span></div></div></div>';
 }
 function fileCard(fl,subtitle){
   var meta=subtitle?('<span>'+esc(subtitle)+'</span>'):('<span>'+(fl.size?human(fl.size):'')+'</span>');
   return '<div class="card" data-file="'+esc(fl.id)+'" data-name="'+esc(fl.name)+'" data-ext="'+esc(fl.ext)+'">'+
     '<div class="thumb'+(isTransName(fl.name)?" trans":"")+'" data-thumbfor="'+esc(fl.id)+'">'+
       '<div class="exttile"><span class="e">'+esc((fl.ext||"?").toUpperCase())+'</span></div></div>'+
-    '<div class="cbody"><div class="cname">'+esc(fl.name)+'</div>'+
-      '<div class="cmeta">'+meta+'<button class="dl" data-dl="'+esc(fl.id)+'" data-dln="'+esc(fl.name)+'">Λήψη</button></div></div></div>';
+    '<div class="cbody"><div class="cname">'+esc(fl.name)+'</div>'+tagChipsHTML(fl.id)+
+      '<div class="cmeta"><span class="left">'+meta+'<button class="tagbtn" data-tag-edit="'+esc(fl.id)+'" data-tag-name="'+esc(fl.name)+'">🏷</button></span><button class="dl" data-dl="'+esc(fl.id)+'" data-dln="'+esc(fl.name)+'">Λήψη</button></div></div></div>';
 }
 function render(){
   var L=curListing(); if(!L){ showEmpty("…"); return; }
   crumbs();
-  var html=L.folders.map(folderCard).join("")+L.files.map(function(f){return fileCard(f,"");}).join("");
-  if(!html){ showEmpty("Άδειος φάκελος. Πάτα «Ανέβασμα εδώ» για να προσθέσεις."); el("count").textContent="0 στοιχεία"; return; }
+  var folders=L.folders.filter(function(f){return hasTag(f.id);});
+  var files=L.files.filter(function(f){return hasTag(f.id);});
+  var html=folders.map(folderCard).join("")+files.map(function(f){return fileCard(f,"");}).join("");
+  if(!html){ showEmpty(activeTag?("Κανένα με ετικέτα «"+activeTag+"» εδώ."):"Άδειος φάκελος. Πάτα «Αρχεία»/«Φάκελος» για να προσθέσεις."); el("count").textContent="0 στοιχεία"; return; }
   el("empty").style.display="none"; el("grid").style.display="grid"; el("grid").innerHTML=html;
-  el("count").textContent=L.folders.length+" φάκελοι · "+L.files.length+" αρχεία";
+  el("count").textContent=folders.length+" φάκελοι · "+files.length+" αρχεία"+(activeTag?(" · ετικέτα «"+activeTag+"»"):"");
   lazyThumbs();
 }
 function lazyThumbs(){
@@ -181,15 +222,16 @@ function lazyThumbs(){
 
 /* ---------- navigation ---------- */
 function goFolder(id,name){
-  path.push({id:id,name:name});
-  if(cache[id]){ render(); window.scrollTo(0,0); }
-  else { showLoading(); listFolder(id).then(function(res){ if(res&&res.error) throw new Error(res.error); render(); window.scrollTo(0,0); })
+  activeTag=""; path.push({id:id,name:name});
+  if(cache[id]){ render(); buildTagBar(); window.scrollTo(0,0); }
+  else { showLoading(); listFolder(id).then(function(res){ if(res&&res.error) throw new Error(res.error); render(); buildTagBar(); window.scrollTo(0,0); })
     .catch(function(err){ path.pop(); toast("Σφάλμα φακέλου: "+esc(String(err.message||err)),true); render(); }); }
 }
-function goCrumb(i){ if(i<0)i=0; path=path.slice(0,i+1); if(el("q").value) el("q").value=""; render(); }
+function goCrumb(i){ if(i<0)i=0; path=path.slice(0,i+1); activeTag=""; if(el("q").value) el("q").value=""; render(); buildTagBar(); }
 function reload(){
   var id=cur().id; delete cache[id]; TREE=null; showLoading();
-  listFolder(id).then(function(){ setStatus("συνδεδεμένο ✓","ok"); if(el("q").value.trim()) doSearch(el("q").value); else render(); })
+  Promise.all([listFolder(id),apiGet("action=labels").then(function(r){LABELS=(r&&r.labels)||LABELS;}).catch(function(){})])
+    .then(function(){ setStatus("συνδεδεμένο ✓","ok"); buildTagBar(); if(el("q").value.trim()) doSearch(el("q").value); else render(); })
     .catch(function(){ setStatus("εκτός σύνδεσης","err"); showEmpty("Αποτυχία ανανέωσης."); });
 }
 
@@ -202,7 +244,7 @@ function flatten(node,trail,acc){
 function runSearch(q){
   q=q.trim().toLowerCase();
   el("crumbs").innerHTML='<a data-i="-1">🏠 '+esc(TREE.name)+'</a><span class="sep">›</span><span class="cur">Αναζήτηση «'+esc(q)+'»</span>';
-  var hits=flatten(TREE.node,TREE.name,[]).filter(function(x){ return x.f.name.toLowerCase().indexOf(q)>=0; });
+  var hits=flatten(TREE.node,TREE.name,[]).filter(function(x){ return x.f.name.toLowerCase().indexOf(q)>=0 && hasTag(x.f.id); });
   if(!hits.length){ showEmpty("Κανένα αρχείο για «"+esc(q)+"»."); el("count").textContent="0 αρχεία"; return; }
   el("empty").style.display="none"; el("grid").style.display="grid";
   el("grid").innerHTML=hits.map(function(x){ return fileCard(x.f,x.trail.replace(TREE.name+" / ","")); }).join("");
@@ -218,27 +260,34 @@ function doSearch(q){
     .catch(function(err){ showEmpty("Η αναζήτηση απέτυχε ("+esc(String(err.message||err))+")."); });
 }
 
-/* ---------- download ---------- */
+/* ---------- download (file & folder-zip) ---------- */
+function saveB64(res,fallbackName){
+  var bin=atob(res.b64),len=bin.length,arr=new Uint8Array(len);
+  for(var i=0;i<len;i++) arr[i]=bin.charCodeAt(i);
+  var blob=new Blob([arr],{type:res.mime||"application/octet-stream"});
+  var url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url; a.download=res.name||fallbackName; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },1500);
+}
 function download(id,name){
   toast("Κατέβασμα «"+name+"»…");
-  apiGet("action=download&id="+encodeURIComponent(id)).then(function(res){
-    if(res.error) throw new Error(res.error);
-    var bin=atob(res.b64),len=bin.length,arr=new Uint8Array(len);
-    for(var i=0;i<len;i++) arr[i]=bin.charCodeAt(i);
-    var blob=new Blob([arr],{type:res.mime||"application/octet-stream"});
-    var url=URL.createObjectURL(blob),a=document.createElement("a");
-    a.href=url; a.download=res.name||name; document.body.appendChild(a); a.click();
-    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },1500);
-  }).catch(function(err){ toast("Απέτυχε το κατέβασμα ("+esc(String(err.message||err))+")",true); });
+  apiGet("action=download&id="+encodeURIComponent(id)).then(function(res){ if(res.error) throw new Error(res.error); saveB64(res,name); })
+    .catch(function(err){ toast("Απέτυχε το κατέβασμα ("+esc(String(err.message||err))+")",true); });
+}
+function downloadZip(id,name){
+  toast("Ετοιμάζω zip για «"+name+"»… (μπορεί να αργήσει)");
+  apiGet("action=zip&id="+encodeURIComponent(id)).then(function(res){ if(res.error) throw new Error(res.error); saveB64(res,name+".zip"); toast("Έτοιμο: "+esc(res.name)); })
+    .catch(function(err){ toast("Zip: "+esc(String(err.message||err)),true); });
 }
 
 /* ---------- detail modal ---------- */
 function openFile(id,name,ext){
   el("modal").innerHTML='<div class="mh"><h2>'+esc(name)+'</h2><button class="x" id="mx">✕</button></div>'+
     '<div class="mpv'+(isTransName(name)?" trans":"")+'" id="mpv"><div class="exttile"><span class="e" style="font-size:30px">'+esc((ext||"?").toUpperCase())+'</span></div></div>'+
-    '<div class="ma"><button class="btn" id="mdl">⬇︎ Λήψη</button><button class="btn ghost" id="mopen">Άνοιγμα στο Drive</button></div>';
+    '<div class="ma"><button class="btn" id="mdl">⬇︎ Λήψη</button><button class="btn ghost" id="mtag">🏷 Ετικέτες</button><button class="btn ghost" id="mopen">Άνοιγμα στο Drive</button></div>';
   el("mx").onclick=closeModal;
   el("mdl").onclick=function(){ download(id,name); };
+  el("mtag").onclick=function(){ editTags(id,name); };
   el("mopen").onclick=function(){ window.open("https://drive.google.com/file/d/"+id+"/view","_blank"); };
   el("backdrop").classList.add("show");
   var box=el("mpv");
@@ -247,36 +296,63 @@ function openFile(id,name,ext){
 }
 function closeModal(){ el("backdrop").classList.remove("show"); }
 
-/* ---------- upload (no password) ---------- */
-function uploadHere(files){
+/* ---------- upload (files, folder, drag-drop) ---------- */
+function dirName(p){ p=p||""; var i=p.lastIndexOf("/"); return i>=0?p.slice(0,i):""; }
+function finishUp(okc,n,target,tname){ toast(okc+"/"+n+" ανέβηκαν στο «"+tname+"».",okc<n); delete cache[target]; TREE=null; listFolder(target).then(function(){ render(); }); }
+function pushUploads(entries){
   if(el("q").value.trim()){ toast("Βγες από την αναζήτηση για να ανεβάσεις σε φάκελο.",true); return; }
-  var target=cur().id, tname=cur().name, arr=[].slice.call(files); if(!arr.length) return;
-  var done=0,okc=0; toast("Ανέβασμα "+arr.length+" αρχείων στο «"+tname+"»…");
-  arr.forEach(function(f){
+  var target=cur().id, tname=cur().name, n=entries.length; if(!n) return;
+  var done=0,okc=0; toast("Ανέβασμα "+n+" αρχείων στο «"+tname+"»…");
+  entries.forEach(function(en){
     var r=new FileReader();
     r.onload=function(){
       var b64=String(r.result).split(",")[1]||"";
-      apiPost({action:"upload",folderId:target,name:f.name,mime:f.type||"application/octet-stream",b64:b64})
-        .then(function(res){ done++; if(res&&res.ok) okc++; else toast("Απέτυχε: "+esc(f.name),true);
-          if(done===arr.length){ toast(okc+"/"+arr.length+" ανέβηκαν στο «"+tname+"»."); delete cache[target]; TREE=null; listFolder(target).then(render); } })
-        .catch(function(){ done++; if(done===arr.length){ toast(okc+"/"+arr.length+" ανέβηκαν.",okc<arr.length); delete cache[target]; listFolder(target).then(render); } });
+      apiPost({action:"upload",folderId:target,relPath:en.relDir||"",name:en.file.name,mime:en.file.type||"application/octet-stream",b64:b64})
+        .then(function(res){ done++; if(res&&res.ok) okc++; else toast("Απέτυχε: "+esc(en.file.name),true); if(done===n) finishUp(okc,n,target,tname); })
+        .catch(function(){ done++; if(done===n) finishUp(okc,n,target,tname); });
     };
-    r.readAsDataURL(f);
+    r.readAsDataURL(en.file);
   });
+}
+function filesToEntries(files,useRel){ return [].slice.call(files).map(function(f){ return {file:f, relDir: useRel?dirName(f.webkitRelativePath||""):""}; }); }
+/* drag-drop with folder support */
+function entriesFromDrop(dt,cb){
+  var items=dt.items, out=[], pend=0, started=false;
+  function done(){ if(started&&pend===0) cb(out); }
+  function walk(entry,pathPrefix){
+    if(!entry) return;
+    if(entry.isFile){ pend++; entry.file(function(f){ out.push({file:f,relDir:pathPrefix}); pend--; done(); },function(){ pend--; done(); }); }
+    else if(entry.isDirectory){ var rd=entry.createReader(); var np=pathPrefix?pathPrefix+"/"+entry.name:entry.name;
+      function read(){ pend++; rd.readEntries(function(ents){ pend--; if(ents.length){ ents.forEach(function(e){ walk(e,np); }); read(); } done(); },function(){ pend--; done(); }); } read(); }
+  }
+  if(items&&items.length&&items[0].webkitGetAsEntry){
+    started=true;
+    for(var i=0;i<items.length;i++){ var en=items[i].webkitGetAsEntry&&items[i].webkitGetAsEntry(); if(en) walk(en,""); }
+    done();
+  } else { cb(filesToEntries(dt.files,false)); }
 }
 
 /* ---------- events ---------- */
 function wire(){
   el("grid").addEventListener("click",function(e){
+    var te=e.target.closest("[data-tag-edit]"); if(te){ e.stopPropagation(); editTags(te.getAttribute("data-tag-edit"),te.getAttribute("data-tag-name")); return; }
+    var z=e.target.closest("[data-zip]"); if(z){ e.stopPropagation(); downloadZip(z.getAttribute("data-zip"),z.getAttribute("data-zipn")); return; }
     var dl=e.target.closest("[data-dl]"); if(dl){ e.stopPropagation(); download(dl.getAttribute("data-dl"),dl.getAttribute("data-dln")); return; }
     var fo=e.target.closest("[data-folder]"); if(fo){ goFolder(fo.getAttribute("data-folder"),fo.getAttribute("data-fname")); return; }
     var fi=e.target.closest("[data-file]"); if(fi){ openFile(fi.getAttribute("data-file"),fi.getAttribute("data-name"),fi.getAttribute("data-ext")); }
   });
+  el("tagbar").addEventListener("click",function(e){ var c=e.target.closest("[data-tag]"); if(!c)return; activeTag=c.getAttribute("data-tag"); buildTagBar(); if(el("q").value.trim()) doSearch(el("q").value); else render(); });
   el("crumbs").addEventListener("click",function(e){ var a=e.target.closest("a[data-i]"); if(a) goCrumb(parseInt(a.getAttribute("data-i"),10)); });
   el("q").addEventListener("input",function(){ doSearch(this.value); });
   el("reload").addEventListener("click",reload);
+  el("zipBtn").addEventListener("click",function(){ if(el("q").value.trim()){ toast("Βγες από την αναζήτηση.",true); return; } downloadZip(cur().id,cur().name); });
   el("uploadBtn").addEventListener("click",function(){ el("fileInput").value=""; el("fileInput").click(); });
-  el("fileInput").addEventListener("change",function(){ if(this.files&&this.files.length) uploadHere(this.files); });
+  el("folderBtn").addEventListener("click",function(){ el("folderInput").value=""; el("folderInput").click(); });
+  el("fileInput").addEventListener("change",function(){ if(this.files&&this.files.length) pushUploads(filesToEntries(this.files,false)); });
+  el("folderInput").addEventListener("change",function(){ if(this.files&&this.files.length) pushUploads(filesToEntries(this.files,true)); });
+  var m=document.querySelector("main");
+  ["dragenter","dragover"].forEach(function(ev){ m.addEventListener(ev,function(e){ e.preventDefault(); }); });
+  m.addEventListener("drop",function(e){ e.preventDefault(); if(e.dataTransfer) entriesFromDrop(e.dataTransfer,function(entries){ if(entries.length) pushUploads(entries); }); });
   el("backdrop").addEventListener("click",function(e){ if(e.target===this) closeModal(); });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape") closeModal(); });
 }
